@@ -16,9 +16,9 @@ class KatalogSeeder extends Seeder
             'nama' => 'Mom Treatment',
             'slug' => 'mom',
             'deskripsi' => 'Perawatan ibu pasca melahirkan, bumil, dan pendampingan persalinan',
-            'gambar' => 'kategori/mom.jpg',
+            'gambar' => 'images/galeri/mom.jpg',
             'urutan' => 1,
-        ]);
+        ]); 
 
         // Mom Treatment Pasca Melahirkan
         Paket::create([
@@ -255,7 +255,7 @@ class KatalogSeeder extends Seeder
             'nama' => 'Baby Treatment',
             'slug' => 'baby',
             'deskripsi' => 'Perawatan bayi, toddler, dan anak dengan pendekatan lembut',
-            'gambar' => 'kategori/baby.jpg',
+            'gambar' => 'images/galeri/baby.jpg',
             'urutan' => 2,
         ]);
 

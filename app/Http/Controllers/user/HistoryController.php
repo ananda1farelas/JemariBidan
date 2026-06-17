@@ -4,35 +4,26 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
+use Illuminate\Http\Request;
 
 class HistoryController extends Controller
 {
     public function index()
     {
-        $transaksis = Transaksi::where('user_id', auth()->id())
-            ->with(['details.paket', 'details.paket.kategori'])
+        $transaksis = Transaksi::with(['details.paket'])
+            ->where('user_id', auth()->id())
             ->orderBy('tanggal_transaksi', 'desc')
             ->paginate(10);
 
-        return view('user.history.index', [
-            'transaksis' => $transaksis,
-            'cartCount' => count(session('keranjang', [])),
-        ]);
+        return view('user.history.index', compact('transaksis'));
     }
 
-    /**
-     * Detail transaksi (Invoice)
-     */
     public function show($id)
     {
-        $transaksi = Transaksi::where('id', $id)
+        $transaksi = Transaksi::with(['details.paket.kategori', 'user'])
             ->where('user_id', auth()->id())
-            ->with(['details.paket.kategori', 'user'])
-            ->firstOrFail();
+            ->findOrFail($id);
 
-        return view('user.history.show', [
-            'transaksi' => $transaksi,
-            'cartCount' => count(session('keranjang', [])),
-        ]);
+        return view('user.history.show', compact('transaksi'));
     }
 }

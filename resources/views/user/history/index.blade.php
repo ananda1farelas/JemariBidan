@@ -1,107 +1,68 @@
 @extends('layouts.user')
 
-@section('title', 'History Transaksi - Jemari Bidan')
-@section('page-title', 'History Transaksi')
+@section('title', 'Riwayat Transaksi - Jemari Bidan')
+@section('page-title', 'Riwayat Transaksi')
 
 @section('content')
-<div class="space-y-6">
+<div class="max-w-4xl mx-auto space-y-6">
 
-    {{-- Header --}}
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">Riwayat Transaksi</h2>
-        <p class="text-gray-500">Kelola dan pantau status pesanan treatment Anda</p>
+        <h2 class="text-2xl font-bold text-gray-800">Riwayat Pesanan</h2>
+        <p class="text-gray-500 mt-1">Lihat status dan detail treatment Anda</p>
     </div>
 
-    {{-- Filter Status --}}
-    <div class="flex flex-wrap gap-2">
-        <button class="px-4 py-2 rounded-full bg-emerald-500 text-white text-sm font-medium">Semua</button>
-        <button class="px-4 py-2 rounded-full bg-white border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50">Menunggu</button>
-        <button class="px-4 py-2 rounded-full bg-white border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50">Diproses</button>
-        <button class="px-4 py-2 rounded-full bg-white border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50">Selesai</button>
+    @if(session('success'))
+    <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl">
+        {{ session('success') }}
     </div>
+    @endif
 
-    {{-- List Transaksi --}}
     <div class="space-y-4">
-        @forelse($transaksis as $trx)
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            {{-- Header Card --}}
-            <div class="p-5 border-b border-gray-100 flex flex-wrap items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                        </svg>
-                    </div>
+        @forelse($transaksis as $transaksi)
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition">
+            <div class="p-6">
+                <div class="flex items-start justify-between mb-4">
                     <div>
-                        <p class="text-sm font-semibold text-gray-800">{{ $trx->kode_transaksi }}</p>
-                        <p class="text-xs text-gray-500">{{ $trx->tanggal_transaksi->format('d M Y, H:i') }}</p>
+                        <div class="font-mono font-semibold text-gray-800">{{ $transaksi->kode_transaksi }}</div>
+                        <div class="text-sm text-gray-400 mt-1">{{ $transaksi->tanggal_transaksi->format('d M Y H:i') }}</div>
                     </div>
+                    {!! $transaksi->status_badge !!}
                 </div>
-                <div class="flex items-center gap-3">
-                    {!! $trx->status_badge !!}
-                    <span class="text-lg font-bold text-gray-800">{{ $trx->total_formatted }}</span>
-                </div>
-            </div>
 
-            {{-- Detail Items --}}
-            <div class="p-5">
-                <div class="space-y-3">
-                    @foreach($trx->details as $detail)
-                    <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold text-gray-800">{{ $detail->paket->nama }}</p>
-                                <p class="text-xs text-gray-500">{{ $detail->paket->kategori->nama ?? '' }} × {{ $detail->qty }}</p>
-                            </div>
-                        </div>
-                        <span class="text-sm font-medium text-gray-700">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</span>
+                <div class="space-y-2 mb-4">
+                    @foreach($transaksi->details as $detail)
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">{{ $detail->paket->nama }} × {{ $detail->qty }}</span>
+                        <span class="text-gray-800">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</span>
                     </div>
                     @endforeach
                 </div>
 
-                {{-- Action --}}
-                <div class="mt-4 flex justify-end">
-                    <a href="{{ route('user.history.show', $trx->id) }}" 
-                    class="text-emerald-600 text-sm font-medium hover:underline flex items-center gap-1">
-                        Lihat Detail
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </a>
+                <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                    <span class="text-gray-500">Total</span>
+                    <span class="font-bold text-gray-800">{{ $transaksi->total_formatted }}</span>
                 </div>
+            </div>
+            
+            <div class="px-6 py-3 bg-gray-50 border-t border-gray-100">
+                <a href="{{ route('user.history.show', $transaksi->id) }}" class="text-emerald-600 text-sm font-medium hover:text-emerald-700">
+                    Lihat Detail →
+                </a>
             </div>
         </div>
         @empty
-            {{-- Empty State (bukan dummy, tapi info belum ada transaksi) --}}
-            <div class="text-center py-16 bg-white rounded-2xl border border-gray-100">
-                <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                    <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                    </svg>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-700 mb-1">Belum Ada Transaksi</h3>
-                <p class="text-gray-500 mb-4">Anda belum melakukan pemesanan treatment</p>
-                <a href="{{ route('user.katalog') }}" class="inline-flex items-center gap-2 bg-emerald-500 text-white px-6 py-2.5 rounded-full font-medium hover:bg-emerald-600 transition">
-                    Lihat Katalog
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                    </svg>
-                </a>
-            </div>
-            @endforelse
+        <div class="text-center py-12 text-gray-400">
+            <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            <p>Belum ada pesanan</p>
+            <a href="{{ route('user.katalog') }}" class="text-emerald-600 text-sm mt-2 inline-block">Pilih Treatment</a>
         </div>
+        @endforelse
+    </div>
 
-        {{-- Pagination kalo ada data --}}
-        @if($transaksis->count() > 0)
-        <div class="mt-6">
-            {{ $transaksis->links() }}
-        </div>
-        @endif 
+    <div class="mt-6">
+        {{ $transaksis->links() }}
     </div>
 
 </div>

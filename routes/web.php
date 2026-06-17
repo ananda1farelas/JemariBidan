@@ -19,6 +19,10 @@ use App\Http\Controllers\User\ArtikelController;
 
 // ─── ADMIN CONTROLLERS ───
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminArtikelController;
+use App\Http\Controllers\Admin\AdminProdukController;
+use App\Http\Controllers\Admin\AdminTransaksiController;
+use App\Http\Controllers\Admin\AdminPenggunaController;
 
 
 // ============================================
@@ -87,12 +91,50 @@ Route::middleware(['auth'])->group(function () {
 // ============================================
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     
-    // ─── DASHBOARD ADMIN ───
+    // Dashboard
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     
-    // Nanti tambahin route admin lainnya di sini:
-    // Route::get('/users', [AdminUserController::class, 'index'])->name('users');
-    // Route::get('/transaksi', [AdminTransaksiController::class, 'index'])->name('transaksi');
-    // Route::get('/produk', [AdminProdukController::class, 'index'])->name('produk');
+    // Kelola Artikel
+    Route::get('/artikel', [AdminArtikelController::class, 'index'])->name('artikel');
+    Route::get('/artikel/create', [AdminArtikelController::class, 'create'])->name('artikel.create');
+    Route::post('/artikel', [AdminArtikelController::class, 'store'])->name('artikel.store');
+    Route::get('/artikel/{id}/edit', [AdminArtikelController::class, 'edit'])->name('artikel.edit');
+    Route::put('/artikel/{id}', [AdminArtikelController::class, 'update'])->name('artikel.update');
+    Route::delete('/artikel/{id}', [AdminArtikelController::class, 'destroy'])->name('artikel.destroy');
+    
+    // Kelola Produk
+    Route::get('/produk', [AdminProdukController::class, 'index'])->name('produk');
+    
+    // Kelola Produk - Kategori
+    Route::get('/produk/kategori', [AdminProdukController::class, 'kategoriIndex'])->name('produk.kategori');
+    Route::get('/produk/kategori/create', [AdminProdukController::class, 'kategoriCreate'])->name('produk.kategori.create');
+    Route::post('/produk/kategori', [AdminProdukController::class, 'kategoriStore'])->name('produk.kategori.store');
+    Route::get('/produk/kategori/{id}/edit', [AdminProdukController::class, 'kategoriEdit'])->name('produk.kategori.edit');
+    Route::put('/produk/kategori/{id}', [AdminProdukController::class, 'kategoriUpdate'])->name('produk.kategori.update');
+    Route::delete('/produk/kategori/{id}', [AdminProdukController::class, 'kategoriDestroy'])->name('produk.kategori.destroy');
+
+    // Kelola Produk - Paket
+    Route::get('/produk/paket', [AdminProdukController::class, 'paketIndex'])->name('produk.paket');
+    Route::get('/produk/paket/create', [AdminProdukController::class, 'paketCreate'])->name('produk.paket.create');
+    Route::post('/produk/paket', [AdminProdukController::class, 'paketStore'])->name('produk.paket.store');
+    Route::get('/produk/paket/{id}/edit', [AdminProdukController::class, 'paketEdit'])->name('produk.paket.edit');
+    Route::put('/produk/paket/{id}', [AdminProdukController::class, 'paketUpdate'])->name('produk.paket.update');
+    Route::delete('/produk/paket/{id}', [AdminProdukController::class, 'paketDestroy'])->name('produk.paket.destroy');
+    
+    // ====== KELOLA TRANSAKSI ======
+    Route::get('/transaksi', [AdminTransaksiController::class, 'index'])->name('transaksi');
+    Route::get('/transaksi/{id}', [AdminTransaksiController::class, 'show'])->name('transaksi.show');
+    Route::get('/transaksi/{id}/edit', [AdminTransaksiController::class, 'edit'])->name('transaksi.edit');
+    Route::put('/transaksi/{id}', [AdminTransaksiController::class, 'update'])->name('transaksi.update');
+    Route::delete('/transaksi/{id}', [AdminTransaksiController::class, 'destroy'])->name('transaksi.destroy');
+    
+    // ====== KELOLA PENGGUNA ======
+    Route::get('/pengguna', [AdminPenggunaController::class, 'index'])->name('pengguna');
+    Route::get('/pengguna/create', [AdminPenggunaController::class, 'create'])->name('pengguna.create');
+    Route::post('/pengguna', [AdminPenggunaController::class, 'store'])->name('pengguna.store');
+    Route::get('/pengguna/{id}', [AdminPenggunaController::class, 'show'])->name('pengguna.show');
+    Route::get('/pengguna/{id}/edit', [AdminPenggunaController::class, 'edit'])->name('pengguna.edit');
+    Route::put('/pengguna/{id}', [AdminPenggunaController::class, 'update'])->name('pengguna.update');
+    Route::delete('/pengguna/{id}', [AdminPenggunaController::class, 'destroy'])->name('pengguna.destroy');
     
 });
