@@ -389,121 +389,142 @@
             font-weight: 500;
         }
 
-        /* ===== SERVICES ===== */
+        /* ========== BASE STYLES (Mobile) ========== */
         .services {
-            padding: 100px 24px;
-            background: white;
-        }
-        .section-header {
+            padding: 60px 20px;
             max-width: 1200px;
-            margin: 0 auto 60px;
-            text-align: center;
+            margin: 0 auto;
         }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
         .section-label {
             display: inline-block;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--sage);
-            margin-bottom: 16px;
+            background: #ffe4e6; /* warna pink muda */
+            color: #be185d;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
         }
+
         .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 42px;
-            font-weight: 700;
-            color: var(--forest);
-            margin-bottom: 16px;
-            letter-spacing: -0.5px;
+            font-size: 1.75rem; /* 28px */
+            color: #1f2937;
+            margin-bottom: 12px;
+            line-height: 1.3;
         }
+
         .section-subtitle {
-            font-size: 18px;
-            color: var(--gray);
-            max-width: 560px;
+            font-size: 1rem;
+            color: #6b7280;
+            max-width: 600px;
             margin: 0 auto;
-            line-height: 1.7;
+            line-height: 1.6;
         }
+
+        /* Grid: 1 kolom di mobile */
         .services-grid {
-            max-width: 1200px;
-            margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 1fr;
             gap: 24px;
         }
+
         .service-card {
-            background: var(--warm-white);
-            border: 1px solid var(--light-gray);
-            border-radius: 20px;
-            padding: 40px 32px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .service-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--sage), var(--forest));
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
-            transform-origin: left;
-        }
-        .service-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
-            border-color: transparent;
-        }
-        .service-card:hover::before {
-            transform: scaleX(1);
-        }
-        .service-icon {
-            width: 64px;
-            height: 64px;
+            background: #ffffff;
             border-radius: 16px;
-            overflow: hidden;
-            margin-bottom: 24px;
-            transition: transform 0.3s ease;
+            padding: 28px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #f3f4f6;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
+
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-icon {
+            width: 56px;
+            height: 56px;
+            margin-bottom: 16px;
+        }
+
         .service-icon img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
         }
-        .service-card:hover .service-icon {
-            transform: scale(1.1) rotate(-5deg);
-        }
+
         .service-card h3 {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--forest);
-            margin-bottom: 12px;
+            font-size: 1.25rem;
+            color: #1f2937;
+            margin-bottom: 10px;
         }
-        .service-card p {
-            font-size: 15px;
-            color: var(--gray);
-            line-height: 1.7;
+
+        .service-card > p {
+            font-size: 0.95rem;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 16px;
         }
+
         .service-features {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--light-gray);
-        }
-        .service-features li {
             list-style: none;
-            font-size: 14px;
-            color: var(--gray);
-            padding: 6px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            padding: 0;
+            margin: 0;
         }
+
+        .service-features li {
+            font-size: 0.9rem;
+            color: #4b5563;
+            padding: 6px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        /* Icon checkmark custom */
         .service-features li::before {
-            content: '';
-            width: 16px;
-            height: 16px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234a7c59' stroke-width='3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E") center/contain no-repeat;
-            flex-shrink: 0;
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981; /* hijau */
+            font-weight: bold;
+        }
+
+        /* ========== TABLET (768px ke atas) ========== */
+        @media (min-width: 768px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* ========== DESKTOP (1024px ke atas) ========== */
+        @media (min-width: 1024px) {
+            .services {
+                padding: 80px 40px;
+            }
+            
+            .services-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 32px;
+            }
+            
+            .section-title {
+                font-size: 2.25rem;
+            }
+            
+            .service-card {
+                padding: 32px;
+            }
         }
 
         /* ===== WHY US ===== */
@@ -588,68 +609,6 @@
             background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
 
-        /* ===== TESTIMONIALS ===== */
-        .testimonials {
-            padding: 100px 24px;
-            background: white;
-        }
-        .testimonials-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-        .testimonial-card {
-            background: var(--warm-white);
-            border: 1px solid var(--light-gray);
-            border-radius: 20px;
-            padding: 32px;
-            transition: all 0.3s ease;
-        }
-        .testimonial-card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-4px);
-        }
-        .testimonial-stars {
-            color: #f59e0b;
-            font-size: 18px;
-            margin-bottom: 16px;
-            letter-spacing: 2px;
-        }
-        .testimonial-text {
-            font-size: 16px;
-            color: var(--charcoal);
-            line-height: 1.7;
-            margin-bottom: 24px;
-            font-style: italic;
-        }
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .author-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-        .author-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .author-info h4 {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--forest);
-        }
-        .author-info p {
-            font-size: 13px;
-            color: var(--gray);
-        }
 
         /* ===== CTA / CONTACT ===== */
         .cta {
@@ -849,7 +808,6 @@
                 width: 320px;
                 margin: 0 auto;
             }
-            .services-grid, .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
             .why-grid { grid-template-columns: 1fr; gap: 60px; }
             .why-visual-box { height: 400px; }
             .contact-grid { grid-template-columns: repeat(2, 1fr); }
@@ -882,7 +840,6 @@
             .trust-inner { grid-template-columns: repeat(2, 1fr); gap: 24px; }
             .trust-item h3 { font-size: 24px; }
             .section-title { font-size: 32px; }
-            .services-grid, .testimonials-grid { grid-template-columns: 1fr; }
             .contact-grid { grid-template-columns: 1fr; }
             .footer-inner { grid-template-columns: 1fr; gap: 32px; }
             .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
@@ -1154,7 +1111,7 @@
     <nav class="navbar" id="navbar">
         <div class="navbar-inner">
             <a href="/" class="brand">
-                <img src="{{ asset('images/logo/logo-jemari.png') }}" alt="Jemari Bidan" class="brand-mark">
+                <img src="{{ url('images/logo/logo-jemari.png') }}" alt="Jemari Bidan" class="brand-mark">
                 <span class="brand-text">Jemari Bidan</span>
             </a>
             <ul class="nav-links" id="navLinks">
@@ -1184,11 +1141,11 @@
             </div>
             <div class="hero-visual">
                 <div class="hero-img-wrapper">
-                    <img src="{{ asset('images/hero/treatment.png') }}" alt="Treatment Ibu dan Anak">
+                    <img src="{{ url('images/hero/treatment.png') }}" alt="Treatment Ibu dan Anak">
                 </div>
                 <div class="hero-visual-card card-1">
                     <div class="card-icon">
-                        <img src="{{ asset('images/hero/baby.png') }}" alt="Baby Treatment">
+                        <img src="{{ url('images/hero/baby.png') }}" alt="Baby Treatment">
                     </div>
                     <div class="card-info">
                         <h4>Baby Treatment</h4>
@@ -1197,7 +1154,7 @@
                 </div>
                 <div class="hero-visual-card card-2">
                     <div class="card-icon">
-                        <img src="{{ asset('images/hero/mom.png') }}" alt="Mom Treatment">
+                        <img src="{{ url('images/hero/mom.png') }}" alt="Mom Treatment">
                     </div>
                     <div class="card-info">
                         <h4>Mom Treatment</h4>
@@ -1340,58 +1297,6 @@
         </div>
     </section>
 
-    <!-- Testimonials -->
-    <section class="testimonials">
-        <div class="section-header">
-            <span class="section-label">Testimoni</span>
-            <h2 class="section-title">Apa Kata Klien Kami</h2>
-            <p class="section-subtitle">
-                Pengalaman nyata dari keluarga yang telah menggunakan layanan Jemari Bidan.
-            </p>
-        </div>
-        <div class="testimonials-grid">
-            <div class="testimonial-card">
-                <div class="testimonial-stars">★★★★★</div>
-                <p class="testimonial-text">"Treatment mom-nya sangat membantu pemulihan pasca caesar. Bidannya sangat profesional dan sabar. Recommended banget!"</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">
-                        <img src="{{ asset('images/testimoni/avatar-dewi.jpg') }}" alt="Dewi Rahayu">
-                    </div>
-                    <div class="author-info">
-                        <h4>Dewi Rahayu</h4>
-                        <p>Ibu dari 2 anak — Surabaya</p>
-                    </div>
-                </div>
-            </div>
-            <div class="testimonial-card">
-                <div class="testimonial-stars">★★★★★</div>
-                <p class="testimonial-text">"Baby massage-nya anak saya jadi tidur lebih nyenyak. Bidannya datang tepat waktu dan sangat hati-hati. Terima kasih Jemari Bidan!"</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">
-                        <img src="{{ asset('images/testimoni/avatar-agnes.jpg') }}" alt="Agnes Sutanto">
-                    </div>
-                    <div class="author-info">
-                        <h4>Agnes Sutanto</h4>
-                        <p>Ibu baru — Surabaya Timur</p>
-                    </div>
-                </div>
-            </div>
-            <div class="testimonial-card">
-                <div class="testimonial-stars">★★★★★</div>
-                <p class="testimonial-text">"Homecare services-nya lifesaver banget untuk working mom kayak saya. Gak perlu ke klinik, treatment langsung di rumah."</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">
-                        <img src="{{ asset('images/testimoni/avatar-maria.jpg') }}" alt="Maria Pratiwi">
-                    </div>
-                    <div class="author-info">
-                        <h4>Maria Pratiwi</h4>
-                        <p>Working mom — Surabaya</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- CTA / Contact -->
     <section class="cta" id="kontak">
         <div class="cta-inner">
@@ -1410,7 +1315,7 @@
                         <img src="{{ asset('images/footer/icon-whatsapp.svg') }}" alt="WhatsApp">
                     </div>
                     <h4>WhatsApp</h4>
-                    <a href="https://wa.me/6281234567890">+62 812-3456-7890</a>
+                    <a href="https://wa.me/6282231267718">+62 822-3126-7718</a>
                 </div>
                 <div class="contact-card">
                     <div class="icon">
@@ -1427,7 +1332,7 @@
                     <a href="https://instagram.com/jemari.bidan">@jemari.bidan</a>
                 </div>
             </div>
-            <a href="https://wa.me/6281234567890" class="cta-btn" target="_blank">
+            <a href="https://wa.me/6282231267718" class="cta-btn" target="_blank">
                 Konsultasi Gratis via WhatsApp
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </a>
@@ -1476,7 +1381,7 @@
                 <a href="#">
                     <img src="{{ asset('images/footer/social-facebook.svg') }}" alt="Facebook">
                 </a>
-                <a href="#">
+                <a href="https://instagram.com/jemari.bidan">
                     <img src="{{ asset('images/footer/social-instagram.svg') }}" alt="Instagram">
                 </a>
                 <a href="#">
