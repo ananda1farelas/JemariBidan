@@ -32,8 +32,8 @@ class UserSeeder extends Seeder
 
         // ─── USER BIASA KEDUA (Opsional) ───
         User::create([
-            'nama'     => 'Shinta',
-            'email'    => 'shinta@example.com',
+            'nama'     => 'Salsa',
+            'email'    => 'salsa@example.com',
             'password' => Hash::make('user123'),
             'no_hp'    => '089876543210',
             'alamat'   => 'Gresik, Jawa Timur',

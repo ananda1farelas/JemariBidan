@@ -1,15 +1,11 @@
 {
     "version": 2,
-    "builds": [
-        {
-            "src": "public/index.php",
-            "use": "@vercel/php"
-        }
-    ],
+    "framework": null,
+    "outputDirectory": "public",
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "/resources/views/landing/index.blade.php"
+            "dest": "/api/index.php"
         }
     ]
 }
