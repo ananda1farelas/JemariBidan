@@ -5,31 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Jemari Bidan - User Dashboard')</title>
-    
+
     {{-- Tailwind CSS --}}
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     {{-- Font --}}
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         body { 
             font-family: 'Poppins', sans-serif; 
             background-color: #f9fafb;
             min-height: 100vh;
         }
-        
-        /* Layout utama: sidebar + content */
+
         .app-layout {
             display: flex;
             min-height: 100vh;
         }
-        
-        /* Sidebar fixed width */
+
         .sidebar {
-            width: 288px; /* w-72 = 18rem = 288px */
+            width: 288px;
             min-height: 100vh;
             height: 100vh;
             position: fixed;
@@ -43,17 +41,15 @@
             overflow-y: auto;
             transition: transform 0.3s ease-in-out;
         }
-        
-        /* Content area: geser ke kanan sesuai sidebar */
+
         .main-content {
             flex: 1;
-            margin-left: 288px; /* sama dengan width sidebar */
+            margin-left: 288px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
-        
-        /* Mobile sidebar */
+
         @media (max-width: 1023px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -65,38 +61,121 @@
                 margin-left: 0;
             }
         }
-        
-        /* Custom scrollbar */
+
         .sidebar::-webkit-scrollbar { width: 4px; }
         .sidebar::-webkit-scrollbar-track { background: transparent; }
         .sidebar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
-        
+
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 3px; }
-        
+
         .menu-active {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
-        
+
         @keyframes bounce-cart {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.2); }
         }
         .cart-badge-animate { animation: bounce-cart 0.3s ease; }
-        
-        /* Modal */
+
         .modal-overlay { 
             background: rgba(0, 0, 0, 0.5); 
             backdrop-filter: blur(4px); 
         }
+
+        /* Notif Dropdown */
+        .notif-dropdown {
+            transform-origin: top right;
+            transition: all 0.2s ease-out;
+        }
+        .notif-dropdown.hidden {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+        .notif-dropdown:not(.hidden) {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        @keyframes notif-bell {
+            0%, 100% { transform: rotate(0); }
+            10% { transform: rotate(15deg); }
+            20% { transform: rotate(-15deg); }
+            30% { transform: rotate(10deg); }
+            40% { transform: rotate(-10deg); }
+            50% { transform: rotate(5deg); }
+            60% { transform: rotate(-5deg); }
+            70% { transform: rotate(2deg); }
+            80% { transform: rotate(-2deg); }
+        }
+        .notif-bell-ring { animation: notif-bell 1s ease; }
+
+        /* ═══════════════════════════════════════════════
+           POPUP NOTIFIKASI (TOAST) STYLES
+        ═══════════════════════════════════════════════ */
+        @keyframes popup-slide-in {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes popup-slide-out {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+        }
+        @keyframes popup-progress {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
+        .popup-notif {
+            animation: popup-slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .popup-notif.hiding {
+            animation: popup-slide-out 0.3s ease-in forwards;
+        }
+        .popup-progress-bar {
+            animation: popup-progress 5s linear forwards;
+        }
+
+        /* Status colors for popup */
+        .popup-menunggu { border-left: 4px solid #f59e0b; }
+        .popup-diproses { border-left: 4px solid #3b82f6; }
+        .popup-selesai { border-left: 4px solid #10b981; }
+        .popup-dibatalkan { border-left: 4px solid #ef4444; }
+
+        .popup-menunggu .popup-icon { color: #f59e0b; background: #fffbeb; }
+        .popup-diproses .popup-icon { color: #3b82f6; background: #eff6ff; }
+        .popup-selesai .popup-icon { color: #10b981; background: #ecfdf5; }
+        .popup-dibatalkan .popup-icon { color: #ef4444; background: #fef2f2; }
     </style>
-    
+
     @yield('styles')
 </head>
 <body>
+
+    {{-- ═══════════════════════════════════════════════
+        POPUP NOTIFIKASI CONTAINER (Fixed top-right)
+    ═══════════════════════════════════════════════ --}}
+    <div id="popup-container" class="fixed top-20 right-4 sm:right-6 z-[80] flex flex-col gap-3 w-[calc(100%-2rem)] sm:w-[400px] max-w-[400px] pointer-events-none">
+        {{-- Popup notifikasi muncul di sini --}}
+    </div>
 
     {{-- Mobile Overlay --}}
     <div id="mobile-overlay" class="fixed inset-0 modal-overlay z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
@@ -105,7 +184,7 @@
     {{-- SIDEBAR --}}
     {{-- ========================================== --}}
     <aside id="sidebar" class="sidebar">
-        
+
         {{-- Logo --}}
         <div class="p-6 border-b border-gray-100 flex-shrink-0">
             <div class="flex items-center gap-3">
@@ -138,7 +217,7 @@
 
         {{-- Navigation --}}
         <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-            
+
             {{-- Dashboard --}}
             <a href="{{ route('user.dashboard') }}" 
                class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-emerald-50 {{ request()->routeIs('user.dashboard') ? 'menu-active' : 'text-gray-600' }}">
@@ -192,7 +271,7 @@
 
         {{-- Footer Sidebar --}}
         <div class="p-4 border-t border-gray-100 flex-shrink-0">
-            <p class="text-xs text-gray-400 text-center">© 2025 Jemari Bidan</p>
+            <p class="text-xs text-gray-400 text-center">&copy; 2025 Jemari Bidan</p>
         </div>
     </aside>
 
@@ -200,11 +279,11 @@
     {{-- MAIN CONTENT AREA --}}
     {{-- ========================================== --}}
     <div class="main-content">
-        
+
         {{-- Top Navbar (Sticky) --}}
-        <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4">
+        <header class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 sm:px-6 py-4">
             <div class="flex items-center justify-between">
-                
+
                 {{-- Left: Hamburger + Breadcrumb --}}
                 <div class="flex items-center gap-4">
                     <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition">
@@ -212,7 +291,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                         </svg>
                     </button>
-                    
+
                     <nav class="hidden sm:flex items-center gap-2 text-sm text-gray-500">
                         <span>User</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -223,8 +302,8 @@
                 </div>
 
                 {{-- Right: Search + Cart + Notif --}}
-                <div class="flex items-center gap-3">
-                    
+                <div class="flex items-center gap-2 sm:gap-3">
+
                     {{-- Search --}}
                     <div class="hidden md:flex items-center bg-gray-100 rounded-full px-4 py-2 w-64">
                         <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -233,9 +312,9 @@
                         <input type="text" placeholder="Cari treatment..." class="bg-transparent border-none outline-none text-sm w-full placeholder-gray-400">
                     </div>
 
-                    {{-- 🛒 CART ICON - BUKA MODAL KERANJANG --}}
-                    <button onclick="openCartModal()" class="relative p-2.5 rounded-full bg-emerald-50 hover:bg-emerald-100 transition-all duration-200 group">
-                        <svg class="w-6 h-6 text-emerald-600 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    {{-- 🛒 CART ICON --}}
+                    <button onclick="openCartModal()" class="relative p-2 sm:p-2.5 rounded-full bg-emerald-50 hover:bg-emerald-100 transition-all duration-200 group">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none">
                             <path d="M9 11V6C9 4.34315 10.3431 3 12 3C13.6569 3 15 4.34315 15 6V11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M4 11H20L18.5 20H5.5L4 11Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M8 14V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -244,22 +323,54 @@
                             <circle cx="8.5" cy="20.5" r="1.5" fill="currentColor"/>
                             <circle cx="15.5" cy="20.5" r="1.5" fill="currentColor"/>
                         </svg>
-                        
-                        <span id="cart-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md cart-badge-animate">
+
+                        <span id="cart-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] sm:text-xs font-bold w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center shadow-md cart-badge-animate">
                             {{ count(session('keranjang', [])) }}
                         </span>
                     </button>
 
-                    {{-- Notification --}}
-                    <button class="relative p-2.5 rounded-full bg-gray-50 hover:bg-gray-100 transition-all duration-200">
-                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                        </svg>
-                        <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full"></span>
-                    </button>
+                    {{-- 🔔 NOTIFICATION DROPDOWN --}}
+                    <div class="relative" id="notif-container">
+                        <button onclick="toggleNotifDropdown()" class="relative p-2 sm:p-2.5 rounded-full bg-gray-50 hover:bg-gray-100 transition-all duration-200" id="notif-btn">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="notif-icon">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                            {{-- Badge notif belum dibaca --}}
+                            <span id="notif-badge" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full hidden"></span>
+                        </button>
+
+                        {{-- Dropdown Notifikasi --}}
+                        <div id="notif-dropdown" class="notif-dropdown hidden absolute right-0 mt-2 w-[340px] sm:w-[380px] bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+                            {{-- Header --}}
+                            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                                <div>
+                                    <h3 class="font-bold text-gray-800">Notifikasi</h3>
+                                    <p class="text-xs text-gray-400 mt-0.5" id="notif-subtitle">Memuat...</p>
+                                </div>
+                                <button onclick="markAllRead()" class="text-xs text-emerald-600 hover:text-emerald-700 font-medium px-2 py-1 rounded-lg hover:bg-emerald-50 transition">
+                                    Tandai dibaca
+                                </button>
+                            </div>
+
+                            {{-- List Notifikasi --}}
+                            <div id="notif-list" class="max-h-[360px] overflow-y-auto">
+                                <div class="flex flex-col items-center justify-center py-10 text-gray-400">
+                                    <svg class="w-10 h-10 mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                                    </svg>
+                                    <p class="text-sm">Memuat notifikasi...</p>
+                                </div>
+                            </div>
+
+                            {{-- Footer --}}
+                            <a href="{{ route('user.history') }}" class="block px-5 py-3 text-center text-sm text-emerald-600 font-medium border-t border-gray-100 hover:bg-emerald-50 transition">
+                                Lihat semua transaksi
+                            </a>
+                        </div>
+                    </div>
 
                     {{-- Mobile Profile --}}
-                    <div class="lg:hidden w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <div class="lg:hidden w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-100 flex items-center justify-center">
                         <span class="text-emerald-700 font-semibold text-xs">
                             {{ strtoupper(substr(auth()->user()->nama ?? 'U', 0, 1)) }}
                         </span>
@@ -269,7 +380,7 @@
         </header>
 
         {{-- Page Content --}}
-        <main class="flex-1 p-6">
+        <main class="flex-1 p-4 sm:p-6">
             @yield('content')
         </main>
     </div>
@@ -279,9 +390,9 @@
     {{-- ========================================== --}}
     <div id="cart-modal" class="fixed inset-0 z-[60] hidden">
         <div class="modal-overlay absolute inset-0" onclick="closeCartModal()"></div>
-        
+
         <div class="absolute right-0 top-0 h-full w-full sm:w-[420px] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-out" id="cart-modal-content">
-            
+
             {{-- Header --}}
             <div class="flex items-center justify-between p-6 border-b border-gray-100">
                 <div class="flex items-center gap-3">
@@ -345,12 +456,10 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('mobile-overlay');
-            
             sidebar.classList.toggle('open');
             overlay.classList.toggle('hidden');
         }
 
-        // Close sidebar on resize to desktop
         window.addEventListener('resize', () => {
             if (window.innerWidth >= 1024) {
                 document.getElementById('mobile-overlay').classList.add('hidden');
@@ -358,34 +467,301 @@
             }
         });
 
+        // ═══════════════════════════════════════════════════════
+        // POPUP NOTIFIKASI SYSTEM (Toast di kanan atas)
+        // ═══════════════════════════════════════════════════════
+        let shownPopupIds = new Set(); // Hindari popup duplikat
+
+        /**
+         * Tampilkan popup notifikasi
+         */
+        function showPopupNotif(data) {
+            // Hindari duplikat
+            if (shownPopupIds.has(data.id)) return;
+            shownPopupIds.add(data.id);
+
+            const container = document.getElementById('popup-container');
+            const status = data.status || 'menunggu';
+            const colorClass = `popup-${status}`;
+
+            const popup = document.createElement('div');
+            popup.className = `popup-notif ${colorClass} pointer-events-auto bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden`;
+            popup.innerHTML = `
+                <div class="flex items-start gap-3 p-4">
+                    <div class="popup-icon w-10 h-10 rounded-full flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-2">
+                            <h4 class="font-semibold text-gray-800 text-sm leading-snug">${data.title || 'Notifikasi'}</h4>
+                            <button onclick="closePopup(this)" class="text-gray-400 hover:text-gray-600 p-0.5 shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">${data.message || ''}</p>
+                        <div class="flex items-center gap-2 mt-2">
+                            <span class="inline-block px-2 py-0.5 rounded-md text-[10px] font-medium bg-${data.status_color || 'gray'}-100 text-${data.status_color || 'gray'}-700">
+                                ${data.status_label || status}
+                            </span>
+                            <span class="text-[10px] text-gray-400">${data.waktu || 'Baru saja'}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="popup-progress-bar h-0.5 bg-gray-200">
+                    <div class="h-full bg-current opacity-30" style="color: inherit;"></div>
+                </div>
+            `;
+
+            // Warna progress bar sesuai status
+            const progressBar = popup.querySelector('.popup-progress-bar div');
+            const statusColors = {
+                menunggu: '#f59e0b',
+                diproses: '#3b82f6',
+                selesai: '#10b981',
+                dibatalkan: '#ef4444'
+            };
+            progressBar.style.backgroundColor = statusColors[status] || '#6b7280';
+            progressBar.classList.add('popup-progress-bar');
+
+            container.appendChild(popup);
+
+            // Auto close after 5 seconds
+            const timeout = setTimeout(() => {
+                closePopupElement(popup);
+            }, 5000);
+
+            // Pause on hover
+            popup.addEventListener('mouseenter', () => {
+                const bar = popup.querySelector('.popup-progress-bar div');
+                bar.style.animationPlayState = 'paused';
+            });
+            popup.addEventListener('mouseleave', () => {
+                const bar = popup.querySelector('.popup-progress-bar div');
+                bar.style.animationPlayState = 'running';
+            });
+
+            // Click to go to detail
+            popup.addEventListener('click', (e) => {
+                if (e.target.closest('button')) return; // Jangan redirect kalau klik tombol close
+                if (data.transaksi_id) {
+                    window.location.href = '{{ url("history") }}/' + data.transaksi_id;
+                }
+            });
+        }
+
+        function closePopup(btn) {
+            const popup = btn.closest('.popup-notif');
+            closePopupElement(popup);
+        }
+
+        function closePopupElement(popup) {
+            popup.classList.add('hiding');
+            setTimeout(() => {
+                if (popup.parentNode) popup.remove();
+            }, 300);
+        }
+
+        // ═══════════════════════════════════════════════════════
+        // NOTIFIKASI DROPDOWN (sama seperti sebelumnya)
+        // ═══════════════════════════════════════════════════════
+        let notifData = [];
+        let notifDropdownOpen = false;
+
+        function toggleNotifDropdown() {
+            const dropdown = document.getElementById('notif-dropdown');
+            const icon = document.getElementById('notif-icon');
+
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+                notifDropdownOpen = true;
+                icon.classList.add('notif-bell-ring');
+                setTimeout(() => icon.classList.remove('notif-bell-ring'), 1000);
+                loadNotifications();
+            } else {
+                dropdown.classList.add('hidden');
+                notifDropdownOpen = false;
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            const container = document.getElementById('notif-container');
+            const dropdown = document.getElementById('notif-dropdown');
+            if (container && !container.contains(e.target) && notifDropdownOpen) {
+                dropdown.classList.add('hidden');
+                notifDropdownOpen = false;
+            }
+        });
+
+        function loadNotifications() {
+            const listEl = document.getElementById('notif-list');
+            const subtitleEl = document.getElementById('notif-subtitle');
+
+            fetch('{{ route("user.notifikasi") }}')
+                .then(res => res.json())
+                .then(data => {
+                    notifData = data.notifications;
+                    updateNotifBadge(data.unread_count);
+
+                    // ═══════════════════════════════════════════════
+                    // TAMPILKAN POPUP UNTUK NOTIF BARU (unread)
+                    // ═══════════════════════════════════════════════
+                    const unreadNotifs = notifData.filter(n => !n.read_at && !shownPopupIds.has(n.id));
+                    unreadNotifs.forEach((notif, index) => {
+                        setTimeout(() => {
+                            showPopupNotif({
+                                id: notif.id,
+                                ...notif.data
+                            });
+                        }, index * 300); // Delay bertingkat biar nggak numpuk
+                    });
+
+                    if (notifData.length === 0) {
+                        listEl.innerHTML = `
+                            <div class="flex flex-col items-center justify-center py-10 text-gray-400">
+                                <svg class="w-10 h-10 mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                                </svg>
+                                <p class="text-sm">Belum ada notifikasi</p>
+                            </div>
+                        `;
+                        subtitleEl.textContent = 'Tidak ada notifikasi';
+                        return;
+                    }
+
+                    subtitleEl.textContent = `${data.unread_count} belum dibaca`;
+
+                    listEl.innerHTML = notifData.map(notif => {
+                        const isUnread = !notif.read_at;
+                        const bgClass = isUnread ? 'bg-emerald-50/60' : 'bg-white';
+                        const dotClass = isUnread ? 'bg-emerald-500' : 'bg-gray-300';
+
+                        return `
+                            <div class="flex gap-3 px-5 py-3.5 hover:bg-gray-50 transition cursor-pointer border-b border-gray-50 ${bgClass}" 
+                                 onclick="handleNotifClick('${notif.id}', ${notif.data.transaksi_id || 'null'})">
+                                <div class="mt-0.5">
+                                    <div class="w-2 h-2 rounded-full ${dotClass}"></div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-gray-800 leading-snug">${notif.data.title || 'Notifikasi'}</p>
+                                    <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">${notif.data.message || ''}</p>
+                                    <div class="flex items-center gap-2 mt-1.5">
+                                        <span class="inline-block px-2 py-0.5 rounded-md text-[10px] font-medium bg-${notif.data.status_color || 'gray'}-100 text-${notif.data.status_color || 'gray'}-700">
+                                            ${notif.data.status_label || notif.data.status || ''}
+                                        </span>
+                                        <span class="text-[10px] text-gray-400">${notif.data.waktu || notif.created_at}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                })
+                .catch(err => {
+                    console.error('Error loading notifications:', err);
+                });
+        }
+
+        function updateNotifBadge(count) {
+            const badge = document.getElementById('notif-badge');
+            if (count > 0) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function handleNotifClick(notifId, transaksiId) {
+            fetch('{{ url("notifikasi/baca") }}/' + notifId, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(() => {
+                if (transaksiId) {
+                    window.location.href = '{{ url("history") }}/' + transaksiId;
+                } else {
+                    loadNotifications();
+                }
+            });
+        }
+
+        function markAllRead() {
+            fetch('{{ route("user.notifikasi.baca-semua") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(() => loadNotifications())
+            .catch(err => console.error('Error marking all read:', err));
+        }
+
+        // Load notif count + popup on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('{{ route("user.notifikasi") }}')
+                .then(res => res.json())
+                .then(data => {
+                    updateNotifBadge(data.unread_count);
+
+                    // Tampilkan popup untuk notif unread
+                    const unreadNotifs = data.notifications.filter(n => !n.read_at);
+                    unreadNotifs.forEach((notif, index) => {
+                        setTimeout(() => {
+                            showPopupNotif({
+                                id: notif.id,
+                                ...notif.data
+                            });
+                        }, 500 + (index * 400));
+                    });
+                })
+                .catch(err => console.error('Error loading initial notif:', err));
+        });
+
+        // Polling setiap 30 detik untuk notif baru
+        setInterval(() => {
+            fetch('{{ route("user.notifikasi") }}')
+                .then(res => res.json())
+                .then(data => {
+                    updateNotifBadge(data.unread_count);
+                    const newNotifs = data.notifications.filter(n => !n.read_at && !shownPopupIds.has(n.id));
+                    newNotifs.forEach((notif, index) => {
+                        setTimeout(() => {
+                            showPopupNotif({
+                                id: notif.id,
+                                ...notif.data
+                            });
+                        }, index * 300);
+                    });
+                })
+                .catch(err => console.error('Polling error:', err));
+        }, 30000);
+
         // ==========================================
-        // MODAL KERANJANG - REAL DATA
+        // MODAL KERANJANG
         // ==========================================
         let cartData = [];
 
         function openCartModal() {
             const modal = document.getElementById('cart-modal');
             const content = document.getElementById('cart-modal-content');
-            
             modal.classList.remove('hidden');
-            setTimeout(() => {
-                content.classList.remove('translate-x-full');
-            }, 10);
-            
+            setTimeout(() => content.classList.remove('translate-x-full'), 10);
             loadCartData();
         }
 
         function closeCartModal() {
             const modal = document.getElementById('cart-modal');
             const content = document.getElementById('cart-modal-content');
-            
             content.classList.add('translate-x-full');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
+            setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        // Ambil data dari server (AJAX)
         function loadCartData() {
             fetch('{{ route("user.keranjang.data") }}')
                 .then(res => res.json())
@@ -395,7 +771,6 @@
                 })
                 .catch(err => {
                     console.error('Error loading cart:', err);
-                    // Fallback ke empty state
                     renderCartItems({ items: [], total_formatted: 'Rp 0', count: 0 });
                 });
         }
@@ -405,13 +780,11 @@
             const countText = document.getElementById('cart-count-text');
             const totalEl = document.getElementById('cart-total');
             const badge = document.getElementById('cart-badge');
-            
-            // Update badge di navbar
+
             badge.textContent = data.count;
-            
             countText.textContent = data.count;
             totalEl.textContent = data.total_formatted;
-            
+
             if (data.items.length === 0) {
                 container.innerHTML = `
                     <div class="text-center py-12">
@@ -429,7 +802,7 @@
                 `;
                 return;
             }
-            
+
             container.innerHTML = data.items.map((item, index) => `
                 <div class="flex gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
                     <div class="w-16 h-16 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
@@ -465,9 +838,7 @@
         function updateQty(index, change) {
             const item = cartData[index];
             if (!item) return;
-            
             const newQty = Math.max(1, Math.min(10, item.qty + change));
-            
             fetch('{{ url("keranjang/update") }}/' + index, {
                 method: 'POST',
                 headers: {
@@ -496,7 +867,6 @@
             });
         }
 
-        // Add to Cart dari halaman katalog (2 parameter: id + nama)
         function addToCart(paketId, paketName) {
             fetch('{{ route("user.keranjang.tambah") }}', {
                 method: 'POST',
@@ -505,10 +875,7 @@
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({ 
-                    paket_id: paketId, 
-                    qty: 1 
-                })
+                body: JSON.stringify({ paket_id: paketId, qty: 1 })
             })
             .then(res => res.json())
             .then(data => {
@@ -538,7 +905,6 @@
                 showToast('Keranjang masih kosong!');
                 return;
             }
-            // Redirect ke halaman checkout
             window.location.href = '{{ route("user.checkout") }}';
         }
 
@@ -552,11 +918,7 @@
                 ${message}
             `;
             document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.classList.remove('translate-y-10', 'opacity-0');
-            }, 10);
-            
+            setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 10);
             setTimeout(() => {
                 toast.classList.add('translate-y-10', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);

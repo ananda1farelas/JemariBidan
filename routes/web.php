@@ -71,6 +71,11 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/keranjang/hapus/{index}', [UserKeranjangController::class, 'hapus'])->name('user.keranjang.hapus');
     Route::post('/keranjang/update/{index}', [UserKeranjangController::class, 'update'])->name('user.keranjang.update');
 
+    // ─── NOTIFIKASI ───
+    Route::get('/notifikasi', [App\Http\Controllers\User\NotifikasiController::class, 'index'])->name('user.notifikasi');
+    Route::post('/notifikasi/baca/{id}', [App\Http\Controllers\User\NotifikasiController::class, 'baca'])->name('user.notifikasi.baca');
+    Route::post('/notifikasi/baca-semua', [App\Http\Controllers\User\NotifikasiController::class, 'bacaSemua'])->name('user.notifikasi.baca-semua');
+
     // === CHECKOUT ===
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('user.checkout');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('user.checkout.store');

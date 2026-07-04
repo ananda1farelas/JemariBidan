@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use App\Models\User;
+use App\Notifications\StatusTransaksiUpdated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -14,12 +15,10 @@ class AdminTransaksiController extends Controller
     {
         $query = Transaksi::with(['user', 'details.paket'])->orderBy('tanggal_transaksi', 'desc');
 
-        // Filter status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Filter tanggal
         if ($request->filled('dari')) {
             $query->whereDate('tanggal_transaksi', '>=', $request->dari);
         }
@@ -27,7 +26,6 @@ class AdminTransaksiController extends Controller
             $query->whereDate('tanggal_transaksi', '<=', $request->sampai);
         }
 
-        // Search kode / nama user
         if ($request->filled('cari')) {
             $cari = $request->cari;
             $query->where(function ($q) use ($cari) {
@@ -57,19 +55,34 @@ class AdminTransaksiController extends Controller
 
     public function update(Request $request, $id)
     {
-        $transaksi = Transaksi::findOrFail($id);
+        $transaksi = Transaksi::with('user')->findOrFail($id);
 
         $request->validate([
             'status' => 'required|in:menunggu,diproses,selesai,dibatalkan',
             'catatan' => 'nullable|string|max:500',
         ]);
 
+        $statusLama = $transaksi->status;
+
+        // Jangan kirim notif kalau status sama
+        if ($statusLama === $request->status) {
+            $transaksi->update([
+                'catatan' => $request->catatan,
+            ]);
+            return redirect()->route('admin.transaksi')->with('success', 'Catatan transaksi diupdate!');
+        }
+
         $transaksi->update([
             'status' => $request->status,
             'catatan' => $request->catatan,
         ]);
 
-        return redirect()->route('admin.transaksi')->with('success', 'Status transaksi diupdate!');
+        // ─── KIRIM NOTIFIKASI KE USER ───
+        if ($transaksi->user) {
+            $transaksi->user->notify(new StatusTransaksiUpdated($transaksi, $statusLama));
+        }
+
+        return redirect()->route('admin.transaksi')->with('success', 'Status transaksi diupdate & notifikasi terkirim!');
     }
 
     public function destroy($id)
