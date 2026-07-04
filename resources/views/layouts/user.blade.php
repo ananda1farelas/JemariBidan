@@ -608,6 +608,12 @@
                 icon.classList.add('notif-bell-ring');
                 setTimeout(() => icon.classList.remove('notif-bell-ring'), 1000);
                 loadNotifications();
+
+                // Langsung sembunyiin badge merah pas dropdown dibuka
+                document.getElementById('notif-badge').classList.add('hidden');
+
+                // Tandai semua sudah dibaca di backend (silent, tanpa reload list)
+                markAllReadSilent();
             } else {
                 dropdown.classList.add('hidden');
                 notifDropdownOpen = false;
@@ -713,6 +719,17 @@
                 }
             })
             .then(() => loadNotifications())
+            .catch(err => console.error('Error marking all read:', err));
+        }
+
+        function markAllReadSilent() {
+            fetch('{{ route("user.notifikasi.baca-semua") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
+            })
             .catch(err => console.error('Error marking all read:', err));
         }
 
