@@ -14,10 +14,29 @@
 
     {{-- Filter Kategori --}}
     <div class="flex flex-wrap gap-2">
-        <button class="px-4 py-2 rounded-full bg-emerald-500 text-white text-sm font-medium">Semua ({{ $kategoris['semua'] }})</button>
-        <button class="px-4 py-2 rounded-full bg-white border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50">Ibu ({{ $kategoris['ibu'] }})</button>
-        <button class="px-4 py-2 rounded-full bg-white border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50">Bayi ({{ $kategoris['bayi'] }})</button>
-        <button class="px-4 py-2 rounded-full bg-white border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50">Gizi ({{ $kategoris['gizi'] }})</button>
+        {{-- Tombol Semua --}}
+        <a href="{{ request()->url() }}" 
+        class="px-4 py-2 rounded-full text-sm font-medium transition {{ !request('kategori') ? 'bg-emerald-500 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50' }}">
+            Semua ({{ $kategoris['semua'] }})
+        </a>
+
+        {{-- Tombol Ibu --}}
+        <a href="{{ request()->fullUrlWithQuery(['kategori' => 'ibu']) }}" 
+        class="px-4 py-2 rounded-full text-sm font-medium transition {{ request('kategori') == 'ibu' ? 'bg-emerald-500 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50' }}">
+            Ibu ({{ $kategoris['ibu'] }})
+        </a>
+
+        {{-- Tombol Bayi --}}
+        <a href="{{ request()->fullUrlWithQuery(['kategori' => 'bayi']) }}" 
+        class="px-4 py-2 rounded-full text-sm font-medium transition {{ request('kategori') == 'bayi' ? 'bg-emerald-500 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50' }}">
+            Bayi ({{ $kategoris['bayi'] }})
+        </a>
+
+        {{-- Tombol Gizi --}}
+        <a href="{{ request()->fullUrlWithQuery(['kategori' => 'gizi']) }}" 
+        class="px-4 py-2 rounded-full text-sm font-medium transition {{ request('kategori') == 'gizi' ? 'bg-emerald-500 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50' }}">
+            Gizi ({{ $kategoris['gizi'] }})
+        </a>
     </div>
 
     {{-- Grid Artikel --}}
