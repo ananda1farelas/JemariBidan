@@ -57,6 +57,12 @@ class AdminTransaksiController extends Controller
     {
         $transaksi = Transaksi::with('user')->findOrFail($id);
 
+        // ─── BLOCK: kalau status sudah final, nggak bisa diubah ───
+        if (in_array($transaksi->status, ['selesai', 'dibatalkan'])) {
+            return redirect()->route('admin.transaksi')
+                ->with('error', 'Transaksi dengan status ' . $transaksi->status . ' tidak dapat diubah lagi!');
+        }
+
         $request->validate([
             'status' => 'required|in:menunggu,diproses,selesai,dibatalkan',
             'catatan' => 'nullable|string|max:500',
