@@ -3,23 +3,33 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\Artikel;
 
 class ArtikelController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $artikels = Artikel::where('publish', true)
+        // 1. Ambil SEMUA artikel yang di-publish dulu (buat ngitung total kategori)
+        $semuaArtikel = Artikel::where('publish', true)
             ->orderBy('created_at', 'desc')
             ->get();
-
-        // Kategori count
+        // 2. Hitung jumlah per kategori (dari semua artikel, bukan yang difilter)
         $kategoris = [
-            'semua' => $artikels->count(),
-            'ibu' => $artikels->where('kategori', 'ibu')->count(),
-            'bayi' => $artikels->where('kategori', 'bayi')->count(),
-            'gizi' => $artikels->where('kategori', 'gizi')->count(),
+            'semua' => $semuaArtikel->count(),
+            'ibu' => $semuaArtikel->where('kategori', 'ibu')->count(),
+            'bayi' => $semuaArtikel->where('kategori', 'bayi')->count(),
+            'gizi' => $semuaArtikel->where('kategori', 'gizi')->count(),
         ];
+
+        // 3. Filter data artikel yang mau ditampilin sesuai tombol yang diklik
+        if ($request->has('kategori')) {
+            // Kalau ada parameter ?kategori di URL, saring datanya
+            $artikels = $semuaArtikel->where('kategori', $request->kategori);
+        } else {
+            // Kalau nggak ada (tampil semua)
+            $artikels = $semuaArtikel;
+        }
 
         return view('user.artikel.index', [
             'artikels' => $artikels,
