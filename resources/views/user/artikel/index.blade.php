@@ -66,10 +66,11 @@
                         {{ number_format($artikel->dibaca) }} kali baca
                     </span>
                 </div>
-            </div>
+            </
+div>
         </a>
         @endforeach
     </div>
 
 </div>
-@endsection
+@endsectio
