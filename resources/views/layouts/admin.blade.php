@@ -55,8 +55,8 @@
         {{-- Logo --}}
         <div class="p-5 border-b border-slate-700">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-sky-500 flex items-center justify-center overflow-hidden">
-                    <img src="{{ url('images/logo/logo-jemari.png') }}" alt="Jemari Bidan" class="w-6 h-6 object-contain">
+                <div class="w-10 h-10 rounded-full border-2 border-sky-500 bg-white flex items-center justify-center overflow-hidden">
+                    <img src="{{ url('images/logo/logo-jemari.png') }}" alt="Jemari Bidan" class="w-7 h-7 object-contain">
                 </div>
                 <div>
                     <h1 class="text-lg font-bold text-white">Jemari Bidan</h1>

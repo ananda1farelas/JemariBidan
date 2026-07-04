@@ -188,8 +188,8 @@
         {{-- Logo --}}
         <div class="p-6 border-b border-gray-100 flex-shrink-0">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg overflow-hidden">
-                    <img src="{{ url('images/logo/logo-jemari.png') }}" alt="Jemari Bidan" class="w-7 h-7 object-contain">
+                <div class="w-12 h-12 rounded-full border-2 border-emerald-600 bg-white flex items-center justify-center shadow-sm overflow-hidden">
+                    <img src="{{ url('images/logo/logo-jemari.png') }}" alt="Jemari Bidan" class="w-9 h-9 object-contain">
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-gray-800">Jemari Bidan</h1>
