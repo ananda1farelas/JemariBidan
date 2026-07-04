@@ -107,9 +107,9 @@
                 <div class="mb-5">
                     <label class="block text-sm font-medium text-slate-700 mb-2">Catatan (Opsional)</label>
                     <textarea name="catatan" rows="4" 
-                              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition resize-y {{ $isLocked ? 'bg-slate-50' : '' }}"
-                              placeholder="Tambahkan catatan untuk transaksi ini..."
-                              {{ $isLocked ? 'readonly' : '' }}>{{ old('catatan', $transaksi->catatan) }}</textarea>
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 outline-none transition resize-none cursor-not-allowed select-none"
+                            placeholder="Tidak ada catatan..."
+                            readonly>{{ old('catatan', $transaksi->catatan) }}</textarea>
                 </div>
 
                 <div class="flex gap-3">
