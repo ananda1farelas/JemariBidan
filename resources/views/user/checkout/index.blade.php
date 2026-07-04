@@ -102,8 +102,9 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Treatment</label>
                 <input type="date" name="tanggal" value="{{ old('tanggal', now()->format('Y-m-d')) }}" 
-                       class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition"
-                       required>
+                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition text-gray-700 appearance-none min-h-[48px]"
+                    style="-webkit-appearance: none;"
+                    required>
                 @error('tanggal')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
