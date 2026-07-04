@@ -14,7 +14,7 @@
 
     {{-- Filter Kategori --}}
     <div class="flex flex-wrap gap-2">
-        <a href="{{ route('user.artikel.index') }}" 
+        <a href="{{ route('user.artikel') }}" 
         class="px-4 py-2 rounded-full text-sm font-medium transition {{ !request('kategori') ? 'bg-emerald-500 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50' }}">
             Semua ({{ $kategoris['semua'] }})
         </a>

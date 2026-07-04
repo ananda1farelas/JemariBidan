@@ -21,7 +21,7 @@ class ArtikelController extends Controller
             'bayi' => $semuaArtikel->where('kategori', 'bayi')->count(),
             'gizi' => $semuaArtikel->where('kategori', 'gizi')->count(),
         ];
-    
+
         // 3. Filter data artikel yang mau ditampilin sesuai tombol yang diklik
         if ($request->has('kategori')) {
             // Kalau ada parameter ?kategori di URL, saring datanya
@@ -30,7 +30,7 @@ class ArtikelController extends Controller
             // Kalau nggak ada (tampil semua)
             $artikels = $semuaArtikel;
         }
-    
+
         return view('user.artikel.index', [
             'artikels' => $artikels,
             'kategoris' => $kategoris,
