@@ -188,10 +188,8 @@
         {{-- Logo --}}
         <div class="p-6 border-b border-gray-100 flex-shrink-0">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
-                    <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                    </svg>
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg overflow-hidden">
+                    <img src="{{ url('images/logo/logo-jemari.png') }}" alt="Jemari Bidan" class="w-7 h-7 object-contain">
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-gray-800">Jemari Bidan</h1>
@@ -468,24 +466,33 @@
         });
 
         // ═══════════════════════════════════════════════════════
-        // POPUP NOTIFIKASI SYSTEM (Toast) - SEKALI PER SESSION
+        // POPUP NOTIFIKASI SYSTEM (Toast) - PER NOTIF ID
         // ═══════════════════════════════════════════════════════
 
-        // Session storage key
-        const POPUP_SHOWN_KEY = 'jemari_notif_popup_shown';
-        let shownPopupIds = new Set();
+        const SHOWN_NOTIF_KEY = 'jemari_shown_notif_ids';
 
-        function shouldShowPopup() {
-            return sessionStorage.getItem(POPUP_SHOWN_KEY) !== 'true';
+        function getShownNotifIds() {
+            try {
+                return new Set(JSON.parse(sessionStorage.getItem(SHOWN_NOTIF_KEY) || '[]'));
+            } catch {
+                return new Set();
+            }
         }
 
-        function markPopupShown() {
-            sessionStorage.setItem(POPUP_SHOWN_KEY, 'true');
+        function saveShownNotifId(id) {
+            const ids = getShownNotifIds();
+            ids.add(id);
+            sessionStorage.setItem(SHOWN_NOTIF_KEY, JSON.stringify([...ids]));
+        }
+
+        function shouldShowPopup(id) {
+            return !getShownNotifIds().has(id);
         }
 
         function showPopupNotif(data) {
-            if (shownPopupIds.has(data.id)) return;
-            shownPopupIds.add(data.id);
+            // Cek apakah notif ini udah pernah dipopup
+            if (!shouldShowPopup(data.id)) return;
+            saveShownNotifId(data.id);
 
             const container = document.getElementById('popup-container');
             if (!container) return;
@@ -734,28 +741,26 @@
         }
 
         // ═══════════════════════════════════════════════════════
-        // LOAD NOTIF: POPUP SEKALI PER SESSION
+        // LOAD NOTIF: POPUP PER NOTIF ID, BADGE PER UNREAD
         // ═══════════════════════════════════════════════════════
         document.addEventListener('DOMContentLoaded', function() {
             fetch('{{ route("user.notifikasi") }}')
                 .then(res => res.json())
                 .then(data => {
+                    // Badge: nunjukin yang unread
                     updateNotifBadge(data.unread_count);
 
-                    // Popup cuma muncul sekali per session browser
-                    if (shouldShowPopup()) {
-                        const unreadNotifs = data.notifications.filter(n => !n.read_at);
-                        if (unreadNotifs.length > 0) {
-                            unreadNotifs.forEach((notif, index) => {
-                                setTimeout(() => {
-                                    showPopupNotif({
-                                        id: notif.id,
-                                        ...notif.data
-                                    });
-                                }, 500 + (index * 400));
-                            });
-                            markPopupShown();
-                        }
+                    // Popup: muncul dari SEMUA notif yang BELUM PERNAH dipopup (per ID)
+                    const notifToShow = data.notifications.filter(n => shouldShowPopup(n.id));
+                    if (notifToShow.length > 0) {
+                        notifToShow.forEach((notif, index) => {
+                            setTimeout(() => {
+                                showPopupNotif({
+                                    id: notif.id,
+                                    ...notif.data
+                                });
+                            }, 500 + (index * 400));
+                        });
                     }
                 })
                 .catch(err => console.error('Error loading initial notif:', err));
