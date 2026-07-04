@@ -18,8 +18,8 @@
     @php
         $isLocked = in_array($transaksi->status, ['selesai', 'dibatalkan']);
         $lockMessage = $transaksi->status == 'selesai' 
-            ? 'Transaksi ini sudah selesai dan tidak dapat diubah lagi.' 
-            : 'Transaksi ini telah dibatalkan dan tidak dapat diubah lagi.';
+            ? 'Transaksi ini sudah selesai!.' 
+            : 'Transaksi ini telah dibatalkan!';
     @endphp
 
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
