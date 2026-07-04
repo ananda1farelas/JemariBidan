@@ -468,19 +468,28 @@
         });
 
         // ═══════════════════════════════════════════════════════
-        // POPUP NOTIFIKASI SYSTEM (Toast di kanan atas)
+        // POPUP NOTIFIKASI SYSTEM (Toast) - SEKALI PER SESSION
         // ═══════════════════════════════════════════════════════
-        let shownPopupIds = new Set(); // Hindari popup duplikat
 
-        /**
-         * Tampilkan popup notifikasi
-         */
+        // Session storage key
+        const POPUP_SHOWN_KEY = 'jemari_notif_popup_shown';
+        let shownPopupIds = new Set();
+
+        function shouldShowPopup() {
+            return sessionStorage.getItem(POPUP_SHOWN_KEY) !== 'true';
+        }
+
+        function markPopupShown() {
+            sessionStorage.setItem(POPUP_SHOWN_KEY, 'true');
+        }
+
         function showPopupNotif(data) {
-            // Hindari duplikat
             if (shownPopupIds.has(data.id)) return;
             shownPopupIds.add(data.id);
 
             const container = document.getElementById('popup-container');
+            if (!container) return;
+
             const status = data.status || 'menunggu';
             const colorClass = `popup-${status}`;
 
@@ -512,45 +521,62 @@
                     </div>
                 </div>
                 <div class="popup-progress-bar h-0.5 bg-gray-200">
-                    <div class="h-full bg-current opacity-30" style="color: inherit;"></div>
+                    <div class="h-full popup-progress-bar-inner" style="background-color: ${getStatusColor(status)}; opacity: 0.4;"></div>
                 </div>
             `;
 
-            // Warna progress bar sesuai status
-            const progressBar = popup.querySelector('.popup-progress-bar div');
-            const statusColors = {
-                menunggu: '#f59e0b',
-                diproses: '#3b82f6',
-                selesai: '#10b981',
-                dibatalkan: '#ef4444'
-            };
-            progressBar.style.backgroundColor = statusColors[status] || '#6b7280';
-            progressBar.classList.add('popup-progress-bar');
-
             container.appendChild(popup);
 
-            // Auto close after 5 seconds
+            // Progress bar animation
+            const bar = popup.querySelector('.popup-progress-bar-inner');
+            if (bar) {
+                bar.style.width = '100%';
+                setTimeout(() => {
+                    bar.style.transition = 'width 5s linear';
+                    bar.style.width = '0%';
+                }, 50);
+            }
+
+            // Auto close
             const timeout = setTimeout(() => {
                 closePopupElement(popup);
             }, 5000);
 
             // Pause on hover
             popup.addEventListener('mouseenter', () => {
-                const bar = popup.querySelector('.popup-progress-bar div');
-                bar.style.animationPlayState = 'paused';
-            });
-            popup.addEventListener('mouseleave', () => {
-                const bar = popup.querySelector('.popup-progress-bar div');
-                bar.style.animationPlayState = 'running';
+                clearTimeout(timeout);
+                if (bar) {
+                    const computed = getComputedStyle(bar);
+                    bar.style.transition = 'none';
+                    bar.style.width = computed.width;
+                }
             });
 
-            // Click to go to detail
+            popup.addEventListener('mouseleave', () => {
+                if (bar) {
+                    bar.style.transition = 'width 2s linear';
+                    bar.style.width = '0%';
+                }
+                setTimeout(() => closePopupElement(popup), 2000);
+            });
+
+            // Click to detail
             popup.addEventListener('click', (e) => {
-                if (e.target.closest('button')) return; // Jangan redirect kalau klik tombol close
+                if (e.target.closest('button')) return;
                 if (data.transaksi_id) {
                     window.location.href = '{{ url("history") }}/' + data.transaksi_id;
                 }
             });
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                menunggu: '#f59e0b',
+                diproses: '#3b82f6',
+                selesai: '#10b981',
+                dibatalkan: '#ef4444'
+            };
+            return colors[status] || '#6b7280';
         }
 
         function closePopup(btn) {
@@ -559,6 +585,7 @@
         }
 
         function closePopupElement(popup) {
+            if (!popup) return;
             popup.classList.add('hiding');
             setTimeout(() => {
                 if (popup.parentNode) popup.remove();
@@ -566,7 +593,7 @@
         }
 
         // ═══════════════════════════════════════════════════════
-        // NOTIFIKASI DROPDOWN (sama seperti sebelumnya)
+        // NOTIFIKASI DROPDOWN
         // ═══════════════════════════════════════════════════════
         let notifData = [];
         let notifDropdownOpen = false;
@@ -605,19 +632,6 @@
                 .then(data => {
                     notifData = data.notifications;
                     updateNotifBadge(data.unread_count);
-
-                    // ═══════════════════════════════════════════════
-                    // TAMPILKAN POPUP UNTUK NOTIF BARU (unread)
-                    // ═══════════════════════════════════════════════
-                    const unreadNotifs = notifData.filter(n => !n.read_at && !shownPopupIds.has(n.id));
-                    unreadNotifs.forEach((notif, index) => {
-                        setTimeout(() => {
-                            showPopupNotif({
-                                id: notif.id,
-                                ...notif.data
-                            });
-                        }, index * 300); // Delay bertingkat biar nggak numpuk
-                    });
 
                     if (notifData.length === 0) {
                         listEl.innerHTML = `
@@ -702,42 +716,40 @@
             .catch(err => console.error('Error marking all read:', err));
         }
 
-        // Load notif count + popup on page load
+        // ═══════════════════════════════════════════════════════
+        // LOAD NOTIF: POPUP SEKALI PER SESSION
+        // ═══════════════════════════════════════════════════════
         document.addEventListener('DOMContentLoaded', function() {
             fetch('{{ route("user.notifikasi") }}')
                 .then(res => res.json())
                 .then(data => {
                     updateNotifBadge(data.unread_count);
 
-                    // Tampilkan popup untuk notif unread
-                    const unreadNotifs = data.notifications.filter(n => !n.read_at);
-                    unreadNotifs.forEach((notif, index) => {
-                        setTimeout(() => {
-                            showPopupNotif({
-                                id: notif.id,
-                                ...notif.data
+                    // Popup cuma muncul sekali per session browser
+                    if (shouldShowPopup()) {
+                        const unreadNotifs = data.notifications.filter(n => !n.read_at);
+                        if (unreadNotifs.length > 0) {
+                            unreadNotifs.forEach((notif, index) => {
+                                setTimeout(() => {
+                                    showPopupNotif({
+                                        id: notif.id,
+                                        ...notif.data
+                                    });
+                                }, 500 + (index * 400));
                             });
-                        }, 500 + (index * 400));
-                    });
+                            markPopupShown();
+                        }
+                    }
                 })
                 .catch(err => console.error('Error loading initial notif:', err));
         });
 
-        // Polling setiap 30 detik untuk notif baru
+        // Polling: cuma update badge, NGGAK munculin popup
         setInterval(() => {
             fetch('{{ route("user.notifikasi") }}')
                 .then(res => res.json())
                 .then(data => {
                     updateNotifBadge(data.unread_count);
-                    const newNotifs = data.notifications.filter(n => !n.read_at && !shownPopupIds.has(n.id));
-                    newNotifs.forEach((notif, index) => {
-                        setTimeout(() => {
-                            showPopupNotif({
-                                id: notif.id,
-                                ...notif.data
-                            });
-                        }, index * 300);
-                    });
                 })
                 .catch(err => console.error('Polling error:', err));
         }, 30000);
