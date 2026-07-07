@@ -110,7 +110,7 @@
                         <div class="font-mono font-medium text-slate-800 text-sm">{{ $transaksi->kode_transaksi }}</div>
                     </td>
                     <td class="px-6 py-4">
-                        <div class="font-medium text-slate-800 text-sm">{{ $transaksi->user->name ?? '-' }}</div>
+                        <div class="font-medium text-slate-800 text-sm">{{ $transaksi->user->nama ?? '-' }}</div>
                         <div class="text-xs text-slate-400">{{ $transaksi->user->email ?? '' }}</div>
                     </td>
                     <td class="px-6 py-4 text-sm text-slate-500">{{ $transaksi->details->count() }} item</td>
