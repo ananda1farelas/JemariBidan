@@ -69,7 +69,7 @@ class AdminDashboardController extends Controller
         // ═══ CHART DATA (7 hari terakhir) ═══
         $chartData = [];
         $maxValue = 0;
-    
+
         for ($i = 6; $i >= 0; $i--) {
             $date = $now->copy()->subDays($i);
             
@@ -133,6 +133,8 @@ class AdminDashboardController extends Controller
 
         // ═══ JUMLAH KATEGORI ═══
         $kategoriCount = \App\Models\Kategori::count();
+
+        dd($chartData);
 
         return view('admin.dashboard', compact(
             'stats',
