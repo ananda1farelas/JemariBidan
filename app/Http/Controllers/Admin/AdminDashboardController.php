@@ -69,15 +69,17 @@ class AdminDashboardController extends Controller
         // ═══ CHART DATA (7 hari terakhir) ═══
         $chartData = [];
         $maxValue = 0;
-
+    
         for ($i = 6; $i >= 0; $i--) {
             $date = $now->copy()->subDays($i);
+            
+            // Ganti 'created_at' menjadi 'tanggal_transaksi'
             $value = Transaksi::where('status', 'selesai')
-                ->whereDate('created_at', $date)
+                ->whereDate('tanggal_transaksi', $date) 
                 ->sum('total_harga');
 
             $chartData[] = [
-                'label' => $date->format('D'), // Sen, Sel, Rab, etc
+                'label' => $date->format('D'),
                 'value' => $value,
                 'date' => $date->format('d M'),
             ];
