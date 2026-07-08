@@ -127,11 +127,19 @@
                 <div class="h-64 flex items-end justify-between gap-2 sm:gap-3">
                     @forelse($chartData as $day)
                     <div class="flex-1 flex flex-col items-center gap-2">
-                        <div class="w-full bg-sky-100 rounded-t-lg relative group cursor-pointer transition-all hover:bg-sky-200" style="height: {{ $day['percent'] }}%;">
-                            <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-10">
-                                Rp {{ number_format($day['value'], 0, ',', '.') }}
+                        {{-- Cek apakah value > 0 --}}
+                        @if($day['value'] > 0)
+                            <div class="w-full bg-sky-500 rounded-t-lg relative group cursor-pointer transition-all hover:bg-sky-600" 
+                                style="height: {{ $day['percent'] }}%;">
+                                <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-10">
+                                    Rp {{ number_format($day['value'], 0, ',', '.') }}
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            {{-- Jika 0, tampilkan bar abu-abu tipis atau kosong --}}
+                            <div class="w-full bg-slate-100 rounded-t-lg" style="height: 4px;"></div>
+                        @endif
+                        
                         <span class="text-xs text-slate-500">{{ $day['label'] }}</span>
                     </div>
                     @empty

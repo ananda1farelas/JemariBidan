@@ -134,8 +134,6 @@ class AdminDashboardController extends Controller
         // ═══ JUMLAH KATEGORI ═══
         $kategoriCount = \App\Models\Kategori::count();
 
-        dd($chartData);
-
         return view('admin.dashboard', compact(
             'stats',
             'newUsersThisWeek',
