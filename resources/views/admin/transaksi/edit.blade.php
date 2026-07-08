@@ -33,7 +33,7 @@
             <div class="mb-6 p-4 bg-slate-50 rounded-xl">
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm text-slate-500">Pelanggan</span>
-                    <span class="font-medium text-slate-800">{{ $transaksi->user->name ?? '-' }}</span>
+                    <span class="font-medium text-slate-800">{{ $transaksi->user->nama ?? '-' }}</span>
                 </div>
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm text-slate-500">Total</span>

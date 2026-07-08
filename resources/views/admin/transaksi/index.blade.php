@@ -171,7 +171,7 @@
 
             {{-- Info Pelanggan --}}
             <div class="mb-3 pb-3 border-b border-slate-100">
-                <div class="text-sm font-medium text-slate-800">{{ $transaksi->user->name ?? '-' }}</div>
+                <div class="text-sm font-medium text-slate-800">{{ $transaksi->user->nama ?? '-' }}</div>
                 <div class="text-xs text-slate-400">{{ $transaksi->user->email ?? '' }}</div>
             </div>
 

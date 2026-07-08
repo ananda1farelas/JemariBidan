@@ -79,10 +79,10 @@
                 <h3 class="text-sm font-semibold text-slate-600 mb-4">Pelanggan</h3>
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-12 h-12 rounded-full bg-sky-100 flex items-center justify-center text-sky-600 font-bold text-lg">
-                        {{ strtoupper(substr($transaksi->user->name ?? 'A', 0, 1)) }}
+                        {{ strtoupper(substr($transaksi->user->nama ?? 'A', 0, 1)) }}
                     </div>
                     <div>
-                        <div class="font-medium text-slate-800">{{ $transaksi->user->name ?? '-' }}</div>
+                        <div class="font-medium text-slate-800">{{ $transaksi->user->nama ?? '-' }}</div>
                         <div class="text-sm text-slate-400">{{ $transaksi->user->email ?? '' }}</div>
                     </div>
                 </div>
