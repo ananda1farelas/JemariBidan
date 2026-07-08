@@ -123,32 +123,91 @@
                         <h3 class="text-lg font-bold text-slate-800">Grafik Pendapatan</h3>
                         <p class="text-sm text-slate-500">7 hari terakhir</p>
                     </div>
-                </div>
-                <div class="h-64 flex items-end justify-between gap-2 sm:gap-3">
-                    @forelse($chartData as $day)
-                    <div class="flex-1 flex flex-col items-center gap-2">
-                        {{-- Cek apakah value > 0 --}}
-                        @if($day['value'] > 0)
-                            <div class="w-full bg-sky-500 rounded-t-lg relative group cursor-pointer transition-all hover:bg-sky-600" 
-                                style="height: {{ $day['percent'] }}%;">
-                                <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-10">
-                                    Rp {{ number_format($day['value'], 0, ',', '.') }}
-                                </div>
-                            </div>
-                        @else
-                            {{-- Jika 0, tampilkan bar abu-abu tipis atau kosong --}}
-                            <div class="w-full bg-slate-100 rounded-t-lg" style="height: 4px;"></div>
-                        @endif
-                        
-                        <span class="text-xs text-slate-500">{{ $day['label'] }}</span>
+                    <div class="flex items-center gap-1.5 text-xs font-medium text-slate-400 bg-slate-50 px-3 py-1.5 rounded-full">
+                        <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+                        Pendapatan Harian
                     </div>
-                    @empty
-                    <div class="w-full h-full flex items-center justify-center text-slate-400">
+                </div>
+
+                @if(collect($chartData)->sum('value') > 0)
+                    <div class="h-64 relative">
+                        <canvas id="pendapatanChart"></canvas>
+                    </div>
+                @else
+                    <div class="h-64 flex items-center justify-center text-slate-400">
                         <p class="text-sm">Belum ada data pendapatan</p>
                     </div>
-                    @endforelse
-                </div>
+                @endif
             </div>
+
+            @push('scripts')
+            <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const ctx = document.getElementById('pendapatanChart');
+                if (!ctx) return;
+
+                const chartData = @json($chartData);
+
+                const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 260);
+                gradient.addColorStop(0, 'rgba(14, 165, 233, 0.25)');
+                gradient.addColorStop(1, 'rgba(14, 165, 233, 0)');
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.map(d => d.label),
+                        datasets: [{
+                            label: 'Pendapatan',
+                            data: chartData.map(d => d.value),
+                            borderColor: '#0ea5e9',
+                            backgroundColor: gradient,
+                            borderWidth: 2.5,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#0ea5e9',
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 6,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#1e293b',
+                                padding: 10,
+                                cornerRadius: 8,
+                                displayColors: false,
+                                callbacks: {
+                                    title: (items) => chartData[items[0].dataIndex].date,
+                                    label: (item) => 'Rp ' + item.formattedValue.replace(/,/g, '.')
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#94a3b8', font: { size: 12 } }
+                            },
+                            y: {
+                                grid: { color: '#f1f5f9' },
+                                border: { display: false },
+                                ticks: {
+                                    color: '#94a3b8',
+                                    font: { size: 11 },
+                                    callback: (value) => 'Rp ' + (value >= 1000000 ? (value/1000000).toFixed(1)+'jt' : value >= 1000 ? (value/1000)+'rb' : value)
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+            </script>
+            @endpush
 
             {{-- Transaksi Pending --}}
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
