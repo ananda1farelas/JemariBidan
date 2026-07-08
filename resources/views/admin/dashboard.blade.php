@@ -140,7 +140,7 @@
                 @endif
             </div>
 
-            @push('scripts')
+            @section('scripts')
             <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const ctx = document.getElementById('pendapatanChart');
@@ -207,7 +207,7 @@
                 });
             });
             </script>
-            @endpush
+            @endsection
 
             {{-- Transaksi Pending --}}
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
