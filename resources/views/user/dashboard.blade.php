@@ -26,7 +26,7 @@
     {{-- Stats Cards --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition">
-            ...
+            
             <h3 class="text-2xl font-bold text-gray-800">{{ $totalTransaksi }}</h3>
             <p class="text-gray-500 text-sm mt-1">Total Transaksi</p>
         </div>

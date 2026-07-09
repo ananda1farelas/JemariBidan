@@ -1108,7 +1108,67 @@
     </style>
 </head>
 <body>
+    <div id="loader" style="
+        position: fixed;
+        inset: 0;
+        background: var(--warm-white);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
+    ">
+        <img src="{{ asset('images/logo/logo-jemari.png') }}" alt="Jemari Bidan" style="
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            animation: loaderPulse 1.5s ease-in-out infinite;
+        ">
+        <span style="
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--forest);
+            font-weight: 700;
+        ">Jemari Bidan</span>
+        <span style="
+            font-size: 13px;
+            color: var(--gray);
+            margin-top: 6px;
+        ">Treatment Ibu & Anak Surabaya</span>
+        
+        <!-- Simple dot loader -->
+        <div style="display: flex; gap: 6px; margin-top: 24px;">
+            <span style="width: 8px; height: 8px; background: var(--sage); border-radius: 50%; animation: loaderBounce 1.4s ease-in-out infinite both;"></span>
+            <span style="width: 8px; height: 8px; background: var(--sage); border-radius: 50%; animation: loaderBounce 1.4s ease-in-out infinite both; animation-delay: 0.16s;"></span>
+            <span style="width: 8px; height: 8px; background: var(--sage); border-radius: 50%; animation: loaderBounce 1.4s ease-in-out infinite both; animation-delay: 0.32s;"></span>
+        </div>
+    </div>
 
+    <style>
+    @keyframes loaderPulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.05); opacity: 0.8; }
+    }
+    @keyframes loaderBounce {
+        0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+        40% { transform: scale(1); opacity: 1; }
+    }
+    #loader.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+    </style>
+
+    <script>
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.getElementById('loader').classList.add('hidden');
+        }, 1200); // Minimal 1.2 detik biar gak terlalu cepat
+    });
+    </script>
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
         <div class="navbar-inner">
