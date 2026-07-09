@@ -1124,35 +1124,42 @@
     <!-- Wrapper logo + lingkaran -->
     <div style="
         position: relative;
-        width: 100px;
-        height: 100px;
+        width: 120px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     ">
-        <svg width="100" height="100" viewBox="0 0 120 120" style="position: absolute; inset: 0;">
-            <circle cx="60" cy="60" r="54" fill="none" stroke="white" stroke-width="2" 
-                stroke-dasharray="340" stroke-dashoffset="340" 
+        <!-- SVG lingkaran - viewBox sama persis -->
+        <svg width="120" height="120" viewBox="0 0 120 120" style="
+            position: absolute;
+            top: 0;
+            left: 0;
+        ">
+            <circle cx="60" cy="60" r="56" fill="none" stroke="white" stroke-width="2.5" 
+                stroke-dasharray="352" stroke-dashoffset="352" 
                 style="animation: drawCircle 1.2s ease forwards;"/>
         </svg>
         
+        <!-- Logo di tengah - pake flex center, bukan translate hack -->
         <img src="{{ asset('images/logo/logo-jemari.png') }}" 
              alt="Jemari Bidan"
              style="
-                 position: absolute;
-                 top: 50%;
-                 left: 50%;
-                 transform: translate(-50%, -50%) scale(0.8);
-                 width: 68px;
-                 height: 68px;
+                 width: 84px;
+                 height: 84px;
                  border-radius: 50%;
                  object-fit: cover;
                  opacity: 0;
                  animation: logoFadeIn 0.6s ease 0.8s forwards;
-                 border: 2px solid rgba(255,255,255,0.2);
+                 border: 2px solid rgba(255,255,255,0.15);
+                 position: relative;
+                 z-index: 2;
              ">
     </div>
 
-    <!-- Tulisan di bawah logo -->
+    <!-- Tulisan di bawah -->
     <div style="
-        margin-top: 20px;
+        margin-top: 24px;
         text-align: center;
         opacity: 0;
         animation: textSlideUp 0.6s ease 1.2s forwards;
@@ -1160,19 +1167,21 @@
         <span style="
             display: block;
             font-family: 'Playfair Display', serif;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
             color: white;
             letter-spacing: -0.5px;
+            line-height: 1.2;
         ">Jemari Bidan</span>
         <span style="
             display: block;
             font-family: 'Inter', sans-serif;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 400;
-            color: rgba(255,255,255,0.7);
-            margin-top: 4px;
+            color: rgba(255,255,255,0.75);
+            margin-top: 6px;
             letter-spacing: 0.5px;
+            line-height: 1.4;
         ">Treatment Ibu & Anak Surabaya</span>
     </div>
 </div>
@@ -1182,10 +1191,10 @@
     to { stroke-dashoffset: 0; }
 }
 @keyframes logoFadeIn {
-    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    to { opacity: 1; }
 }
 @keyframes textSlideUp {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
 #loader.hidden {
@@ -1194,24 +1203,24 @@
 }
 
 /* ===== RESPONSIVE ===== */
-@media (min-width: 768px) {
+@media (max-width: 640px) {
     #loader > div:first-child {
-        width: 120px;
-        height: 120px;
+        width: 100px;
+        height: 100px;
     }
     #loader > div:first-child svg {
-        width: 120px;
-        height: 120px;
+        width: 100px;
+        height: 100px;
     }
     #loader > div:first-child img {
-        width: 80px;
-        height: 80px;
+        width: 70px;
+        height: 70px;
     }
     #loader > div:last-child span:first-child {
-        font-size: 26px;
+        font-size: 20px;
     }
     #loader > div:last-child span:last-child {
-        font-size: 13px;
+        font-size: 12px;
     }
 }
 </style>
