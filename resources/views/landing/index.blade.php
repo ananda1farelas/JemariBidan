@@ -1108,67 +1108,95 @@
     </style>
 </head>
 <body>
-    <div id="loader" style="
-        position: fixed;
-        inset: 0;
-        background: var(--warm-white);
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        transition: opacity 0.6s ease, visibility 0.6s ease;
-    ">
-        <img src="{{ asset('images/logo/logo-jemari.png') }}" alt="Jemari Bidan" style="
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin-bottom: 20px;
-            animation: loaderPulse 1.5s ease-in-out infinite;
-        ">
-        <span style="
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            color: var(--forest);
-            font-weight: 700;
-        ">Jemari Bidan</span>
-        <span style="
-            font-size: 13px;
-            color: var(--gray);
-            margin-top: 6px;
-        ">Treatment Ibu & Anak Surabaya</span>
+    
+<div id="loader" style="
+    position: fixed;
+    inset: 0;
+    background: var(--forest);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+">
+    <!-- Wrapper logo + lingkaran -->
+    <div style="position: relative; width: 120px; height: 120px;">
+        <svg width="120" height="120" viewBox="0 0 120 120" style="position: absolute; inset: 0;">
+            <circle cx="60" cy="60" r="54" fill="none" stroke="white" stroke-width="2" 
+                stroke-dasharray="340" stroke-dashoffset="340" 
+                style="animation: drawCircle 1.2s ease forwards;"/>
+        </svg>
         
-        <!-- Simple dot loader -->
-        <div style="display: flex; gap: 6px; margin-top: 24px;">
-            <span style="width: 8px; height: 8px; background: var(--sage); border-radius: 50%; animation: loaderBounce 1.4s ease-in-out infinite both;"></span>
-            <span style="width: 8px; height: 8px; background: var(--sage); border-radius: 50%; animation: loaderBounce 1.4s ease-in-out infinite both; animation-delay: 0.16s;"></span>
-            <span style="width: 8px; height: 8px; background: var(--sage); border-radius: 50%; animation: loaderBounce 1.4s ease-in-out infinite both; animation-delay: 0.32s;"></span>
-        </div>
+        <img src="{{ asset('images/logo/logo-jemari.png') }}" 
+             alt="Jemari Bidan"
+             style="
+                 position: absolute;
+                 top: 50%;
+                 left: 50%;
+                 transform: translate(-50%, -50%) scale(0.8);
+                 width: 80px;
+                 height: 80px;
+                 border-radius: 50%;
+                 object-fit: cover;
+                 opacity: 0;
+                 animation: logoFadeIn 0.6s ease 0.8s forwards;
+                 border: 2px solid rgba(255,255,255,0.2);
+             ">
     </div>
 
-    <style>
-    @keyframes loaderPulse {
-        0%, 100% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.05); opacity: 0.8; }
-    }
-    @keyframes loaderBounce {
-        0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
-        40% { transform: scale(1); opacity: 1; }
-    }
-    #loader.hidden {
+    <!-- Tulisan di bawah logo -->
+    <div style="
+        margin-top: 24px;
+        text-align: center;
         opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-    }
-    </style>
+        animation: textSlideUp 0.6s ease 1.2s forwards;
+    ">
+        <span style="
+            display: block;
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.5px;
+        ">Jemari Bidan</span>
+        <span style="
+            display: block;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            color: rgba(255,255,255,0.7);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        ">Treatment Ibu & Anak Surabaya</span>
+    </div>
+</div>
 
-    <script>
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            document.getElementById('loader').classList.add('hidden');
-        }, 1200); // Minimal 1.2 detik biar gak terlalu cepat
-    });
-    </script>
+<style>
+@keyframes drawCircle {
+    to { stroke-dashoffset: 0; }
+}
+@keyframes logoFadeIn {
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes textSlideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+#loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+</style>
+
+<script>
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.getElementById('loader').classList.add('hidden');
+    }, 2600);
+});
+</script>
+
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
         <div class="navbar-inner">
