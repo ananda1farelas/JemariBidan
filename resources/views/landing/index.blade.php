@@ -1108,7 +1108,7 @@
     </style>
 </head>
 <body>
-    
+
 <div id="loader" style="
     position: fixed;
     inset: 0;
@@ -1119,10 +1119,15 @@
     align-items: center;
     justify-content: center;
     transition: opacity 0.8s ease, visibility 0.8s ease;
+    padding: 20px;
 ">
     <!-- Wrapper logo + lingkaran -->
-    <div style="position: relative; width: 120px; height: 120px;">
-        <svg width="120" height="120" viewBox="0 0 120 120" style="position: absolute; inset: 0;">
+    <div style="
+        position: relative;
+        width: 100px;
+        height: 100px;
+    ">
+        <svg width="100" height="100" viewBox="0 0 120 120" style="position: absolute; inset: 0;">
             <circle cx="60" cy="60" r="54" fill="none" stroke="white" stroke-width="2" 
                 stroke-dasharray="340" stroke-dashoffset="340" 
                 style="animation: drawCircle 1.2s ease forwards;"/>
@@ -1135,8 +1140,8 @@
                  top: 50%;
                  left: 50%;
                  transform: translate(-50%, -50%) scale(0.8);
-                 width: 80px;
-                 height: 80px;
+                 width: 68px;
+                 height: 68px;
                  border-radius: 50%;
                  object-fit: cover;
                  opacity: 0;
@@ -1147,7 +1152,7 @@
 
     <!-- Tulisan di bawah logo -->
     <div style="
-        margin-top: 24px;
+        margin-top: 20px;
         text-align: center;
         opacity: 0;
         animation: textSlideUp 0.6s ease 1.2s forwards;
@@ -1155,7 +1160,7 @@
         <span style="
             display: block;
             font-family: 'Playfair Display', serif;
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 700;
             color: white;
             letter-spacing: -0.5px;
@@ -1163,7 +1168,7 @@
         <span style="
             display: block;
             font-family: 'Inter', sans-serif;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 400;
             color: rgba(255,255,255,0.7);
             margin-top: 4px;
@@ -1186,6 +1191,28 @@
 #loader.hidden {
     opacity: 0;
     visibility: hidden;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (min-width: 768px) {
+    #loader > div:first-child {
+        width: 120px;
+        height: 120px;
+    }
+    #loader > div:first-child svg {
+        width: 120px;
+        height: 120px;
+    }
+    #loader > div:first-child img {
+        width: 80px;
+        height: 80px;
+    }
+    #loader > div:last-child span:first-child {
+        font-size: 26px;
+    }
+    #loader > div:last-child span:last-child {
+        font-size: 13px;
+    }
 }
 </style>
 
