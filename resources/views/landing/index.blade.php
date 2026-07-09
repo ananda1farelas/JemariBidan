@@ -1121,43 +1121,42 @@
     transition: opacity 0.8s ease, visibility 0.8s ease;
     padding: 20px;
 ">
-    <!-- Wrapper logo + lingkaran -->
+    <!-- Wrapper logo -->
     <div style="
         position: relative;
-        width: 120px;
-        height: 120px;
+        width: 110px;
+        height: 110px;
         display: flex;
         align-items: center;
         justify-content: center;
     ">
-        <!-- SVG lingkaran - viewBox sama persis -->
-        <svg width="120" height="120" viewBox="0 0 120 120" style="
+        <!-- SVG lingkaran tipis, gak pake border tebel -->
+        <svg width="110" height="110" viewBox="0 0 110 110" style="
             position: absolute;
             top: 0;
             left: 0;
         ">
-            <circle cx="60" cy="60" r="56" fill="none" stroke="white" stroke-width="2.5" 
-                stroke-dasharray="352" stroke-dashoffset="352" 
+            <circle cx="55" cy="55" r="52" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" 
+                stroke-dasharray="327" stroke-dashoffset="327" 
                 style="animation: drawCircle 1.2s ease forwards;"/>
         </svg>
         
-        <!-- Logo di tengah - pake flex center, bukan translate hack -->
+        <!-- Logo - HAPUS border, biar border native dari PNG aja -->
         <img src="{{ asset('images/logo/logo-jemari.png') }}" 
              alt="Jemari Bidan"
              style="
-                 width: 84px;
-                 height: 84px;
+                 width: 88px;
+                 height: 88px;
                  border-radius: 50%;
                  object-fit: cover;
                  opacity: 0;
                  animation: logoFadeIn 0.6s ease 0.8s forwards;
-                 border: 2px solid rgba(255,255,255,0.15);
                  position: relative;
                  z-index: 2;
              ">
     </div>
 
-    <!-- Tulisan di bawah -->
+    <!-- Tulisan -->
     <div style="
         margin-top: 24px;
         text-align: center;
@@ -1167,7 +1166,7 @@
         <span style="
             display: block;
             font-family: 'Playfair Display', serif;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             color: white;
             letter-spacing: -0.5px;
@@ -1176,7 +1175,7 @@
         <span style="
             display: block;
             font-family: 'Inter', sans-serif;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 400;
             color: rgba(255,255,255,0.75);
             margin-top: 6px;
@@ -1213,14 +1212,14 @@
         height: 100px;
     }
     #loader > div:first-child img {
-        width: 70px;
-        height: 70px;
+        width: 80px;
+        height: 80px;
     }
     #loader > div:last-child span:first-child {
         font-size: 20px;
     }
     #loader > div:last-child span:last-child {
-        font-size: 12px;
+        font-size: 11px;
     }
 }
 </style>
@@ -1245,7 +1244,7 @@ window.addEventListener('load', () => {
                 <li><a href="#layanan">Layanan</a></li>
                 <li><a href="#tentang">Tentang Kami</a></li>
                 <li><a href="#kontak">Kontak</a></li>
-                <li><a href="/login" class="nav-cta">Masuk</a></li>
+                <li><a href="#" class="nav-cta" onclick="openModal('login'); return false;">Masuk</a></li>
             </ul>
             <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
         </div>
@@ -1262,7 +1261,7 @@ window.addEventListener('load', () => {
                 </p>
                 <div class="hero-actions">
                     <a href="#kontak" class="btn-primary">Hubungi Kami</a>
-                    <a href="#" class="btn-ghost" onclick="openModal('login')">Lihat Katalog Layanan</a>
+                    <a href="#" class="btn-ghost" onclick="openModal('login'); return false;">Lihat Katalog Layanan</a>
                 </div>
             </div>
             <div class="hero-visual">
@@ -1476,10 +1475,10 @@ window.addEventListener('load', () => {
             <div class="footer-col">
                 <h4>Layanan</h4>
                 <ul>
-                    <li><a href="#">Mom Treatment</a></li>
-                    <li><a href="#">Baby Treatment</a></li>
-                    <li><a href="#">Homecare</a></li>
-                    <li><a href="#">Konsultasi</a></li>
+                <li><a href="#" onclick="openModal('login'); return false;">Mom Treatment</a></li>
+                <li><a href="#" onclick="openModal('login'); return false;">Baby Treatment</a></li>
+                <li><a href="#" onclick="openModal('login'); return false;">Homecare</a></li>
+                <li><a href="#" onclick="openModal('login'); return false;">Konsultasi</a></li>
                 </ul>
             </div>
             <div class="footer-col">
